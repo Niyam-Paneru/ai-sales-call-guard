@@ -16,7 +16,18 @@ Call systems often have more than one operating mode. Permission to call an allo
 2. **Mode-specific gates** then separate `self_call` from `live_prospect`.
 3. Any unknown mode is denied by default.
 
-This is narrower than a general agent-authorization layer and separate from realtime voice-pipeline concerns: it is specifically about **call-mode governance before transport**.
+## Where this layer sits
+
+This module owns one narrow boundary so it does not pretend to be a general safety system.
+
+| Concern | Owned here? | Boundary |
+|---|---|---|
+| Generic tool/agent authorization | No | broader systems decide whether an agent may attempt a side effect at all |
+| **Call-mode eligibility before transport** | **Yes** | this repo separates self-test from external-prospect policy and returns a reasoned allow/deny decision |
+| Provider dialing / telephony | No | no SDK, credentials, number provisioning, or call creation exists here |
+| Realtime audio / latency safety | No | media capture, pipeline timing, and late-answer suppression belong after transport begins |
+
+That separation is the reason this repo exists independently: **the same system may permit a controlled self-call while still denying external prospect calls**.
 
 ## Decision paths
 
@@ -42,7 +53,7 @@ This is narrower than a general agent-authorization layer and separate from real
 PYTHONPATH=src python -m unittest discover -s tests
 ```
 
-The CircleCI configuration runs the same behavior tests plus source compilation and public-proof file checks.
+The CircleCI configuration runs the same behavior tests plus source compilation and public-proof file checks. A CI configuration is not the same as a published passing status; inspect the current commit status when evaluating remote CI.
 
 ## Boundary and provenance
 
