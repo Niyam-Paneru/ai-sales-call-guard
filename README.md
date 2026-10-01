@@ -4,6 +4,8 @@
 
 This is the public policy slice from DentSignal's outbound AI-call experiments. It does **not** place calls. It decides whether a call attempt is even eligible to exist.
 
+![Call policy architecture](docs/workflow.svg)
+
 ## What the repo is actually about
 
 The interesting problem is not “how do I call a provider API?”
