@@ -1,36 +1,34 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="300" viewBox="0 0 1200 300" role="img" aria-labelledby="t d">
-<title id="t">AI sales call guard workflow</title>
-<desc id="d">A call request passes universal blocks before separate self-test and external-call gates.</desc>
-<rect width="1200" height="300" fill="#0b1020"/>
-<text x="54" y="50" fill="#f8fafc" font-family="Arial,sans-serif" font-size="28" font-weight="700">Policy first. Provider later.</text>
-<g font-family="Arial,sans-serif">
-  <rect x="60" y="115" width="220" height="90" rx="18" fill="#111827" stroke="#60a5fa" stroke-width="3"/>
-  <text x="170" y="151" text-anchor="middle" fill="#dbeafe" font-size="20" font-weight="700">request</text>
-  <text x="170" y="179" text-anchor="middle" fill="#94a3b8" font-size="14">mode + destination</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 520" role="img" aria-labelledby="t d">
+<title id="t">AI sales call guard architecture</title><desc id="d">A call request passes hard blocks and separate self-test or external-call policy before returning allow or deny.</desc>
+<rect width="1200" height="520" fill="#f5f5f1"/>
+<text x="56" y="62" fill="#71716a" font-family="Arial,sans-serif" font-size="13" letter-spacing="3">AI SALES CALL GUARD</text>
+<text x="56" y="105" fill="#171714" font-family="Georgia,serif" font-size="34">Policy first. Provider later.</text>
 
-  <rect x="350" y="100" width="250" height="120" rx="18" fill="#111827" stroke="#fb7185" stroke-width="3"/>
-  <text x="475" y="138" text-anchor="middle" fill="#ffe4e6" font-size="20" font-weight="700">hard gates</text>
-  <text x="475" y="166" text-anchor="middle" fill="#94a3b8" font-size="14">privacy · suppression · limit</text>
-  <text x="475" y="194" text-anchor="middle" fill="#fb7185" font-size="13">blocked → stop</text>
+<rect x="58" y="175" width="180" height="95" rx="14" fill="#fff" stroke="#171714" stroke-width="2"/>
+<text x="82" y="206" fill="#71716a" font-family="Arial,sans-serif" font-size="12" letter-spacing="2">REQUEST</text>
+<text x="82" y="238" fill="#171714" font-family="Arial,sans-serif" font-size="20" font-weight="700">mode + destination</text>
 
-  <rect x="680" y="78" width="210" height="82" rx="18" fill="#111827" stroke="#22d3ee" stroke-width="3"/>
-  <text x="785" y="112" text-anchor="middle" fill="#cffafe" font-size="19" font-weight="700">self-test gate</text>
-  <text x="785" y="140" text-anchor="middle" fill="#94a3b8" font-size="13">explicitly enabled</text>
+<rect x="310" y="140" width="235" height="165" rx="16" fill="#fff" stroke="#171714" stroke-width="2"/>
+<text x="335" y="174" fill="#71716a" font-family="Arial,sans-serif" font-size="12" letter-spacing="2">HARD BLOCKS</text>
+<text x="335" y="207" fill="#171714" font-family="Georgia,serif" font-size="24">Stop before transport.</text>
+<text x="335" y="245" fill="#a4243b" font-family="Arial,sans-serif" font-size="14">privacy boundary</text>
+<text x="335" y="270" fill="#a4243b" font-family="Arial,sans-serif" font-size="14">suppression / limit</text>
 
-  <rect x="680" y="178" width="210" height="82" rx="18" fill="#111827" stroke="#a78bfa" stroke-width="3"/>
-  <text x="785" y="212" text-anchor="middle" fill="#ede9fe" font-size="19" font-weight="700">external gate</text>
-  <text x="785" y="240" text-anchor="middle" fill="#94a3b8" font-size="13">all required checks</text>
+<rect x="620" y="130" width="220" height="95" rx="14" fill="#fff" stroke="#171714" stroke-width="2"/>
+<text x="645" y="160" fill="#71716a" font-family="Arial,sans-serif" font-size="12" letter-spacing="2">SELF TEST</text>
+<text x="645" y="192" fill="#171714" font-family="Arial,sans-serif" font-size="20" font-weight="700">enabled + allowed</text>
 
-  <rect x="960" y="115" width="180" height="90" rx="18" fill="#111827" stroke="#4ade80" stroke-width="3"/>
-  <text x="1050" y="151" text-anchor="middle" fill="#dcfce7" font-size="20" font-weight="700">decision</text>
-  <text x="1050" y="179" text-anchor="middle" fill="#94a3b8" font-size="14">allow / deny + reason</text>
-</g>
-<g stroke="#475569" stroke-width="4" fill="none" stroke-linecap="round">
-  <path d="M280 160 H350"/>
-  <path d="M600 160 C630 160 645 119 680 119"/>
-  <path d="M600 160 C630 160 645 219 680 219"/>
-  <path d="M890 119 C930 119 930 160 960 160"/>
-  <path d="M890 219 C930 219 930 160 960 160"/>
-</g>
-<text x="1140" y="275" fill="#64748b" font-family="Arial,sans-serif" font-size="13" text-anchor="end">No accidental fallback lanes.</text>
+<rect x="620" y="245" width="220" height="95" rx="14" fill="#fff" stroke="#171714" stroke-width="2"/>
+<text x="645" y="275" fill="#71716a" font-family="Arial,sans-serif" font-size="12" letter-spacing="2">EXTERNAL CALL</text>
+<text x="645" y="307" fill="#171714" font-family="Arial,sans-serif" font-size="20" font-weight="700">all gates present</text>
+
+<rect x="930" y="175" width="205" height="95" rx="14" fill="#e4edb0" stroke="#596e35" stroke-width="2"/>
+<text x="955" y="206" fill="#596e35" font-family="Arial,sans-serif" font-size="12" letter-spacing="2">DECISION</text>
+<text x="955" y="238" fill="#171714" font-family="Arial,sans-serif" font-size="20" font-weight="700">allow / deny + reason</text>
+
+<g stroke="#171714" stroke-width="2" fill="none"><path d="M238 222 H310"/><path d="M545 222 C575 222 585 177 620 177"/><path d="M545 222 C575 222 585 292 620 292"/><path d="M840 177 C885 177 885 222 930 222"/><path d="M840 292 C885 292 885 222 930 222"/></g>
+<g fill="#171714"><path d="M302 216 l10 6 -10 6z"/><path d="M922 216 l10 6 -10 6z"/></g>
+
+<rect x="310" y="385" width="525" height="58" rx="12" fill="#262722"/>
+<text x="335" y="421" fill="#fff" font-family="Georgia,serif" font-size="18">This repository contains policy logic, not a dialer.</text>
 </svg>
