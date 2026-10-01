@@ -16,6 +16,8 @@ Call systems often have more than one operating mode. Permission to call an allo
 2. **Mode-specific gates** then separate `self_call` from `live_prospect`.
 3. Any unknown mode is denied by default.
 
+The request object snapshots the self-call allowlist into a `frozenset`, so mutating a caller-owned set after construction cannot silently widen an already-created request.
+
 ## Where this layer sits
 
 This module owns one narrow boundary so it does not pretend to be a general safety system.
@@ -42,10 +44,10 @@ That separation is the reason this repo exists independently: **the same system 
 
 ## Read the implementation
 
-- [`src/sales_call_guard/models.py`](src/sales_call_guard/models.py) — request and decision types.
+- [`src/sales_call_guard/models.py`](src/sales_call_guard/models.py) — validated request/decision types and immutable allowlist snapshot.
 - [`src/sales_call_guard/gates.py`](src/sales_call_guard/gates.py) — universal, self-test, and external-call checks.
 - [`src/sales_call_guard/policy.py`](src/sales_call_guard/policy.py) — hard-gate-first dispatch and default deny.
-- [`tests/`](tests/) — behavior checks for hard gates, both modes, and unknown-mode denial.
+- [`tests/`](tests/) — behavior checks for hard gates, request integrity, both modes, and unknown-mode denial.
 
 ## Verify
 
