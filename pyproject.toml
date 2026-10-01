@@ -6,9 +6,15 @@ build-backend = "setuptools.build_meta"
 name = "ai-sales-call-guard"
 version = "0.1.0"
 description = "Default-deny policy gates for AI call experiments, with separate self-test and external-call capabilities."
+readme = "README.md"
+authors = [{ name = "Niyam Paneru" }]
 requires-python = ">=3.10"
 license = { text = "MIT" }
 keywords = ["ai-agents","voice-ai","policy","default-deny","safety-boundary"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[project.urls]
+Homepage = "https://github.com/Niyam-Paneru/ai-sales-call-guard"
+Source = "https://github.com/Niyam-Paneru/ai-sales-call-guard"
