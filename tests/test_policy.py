@@ -50,6 +50,30 @@ class SalesCallGuardTests(unittest.TestCase):
         self.assertTrue(d.allowed)
         self.assertEqual(d.reason, "self_call_allowed")
 
+    def test_mutating_source_allowlist_cannot_change_request(self):
+        source = {"+15550000001"}
+        request = CallRequest(
+            mode="self_call",
+            destination="+15550000002",
+            self_calls_enabled=True,
+            allowed_self_numbers=source,
+        )
+
+        source.add("+15550000002")
+
+        self.assertEqual(request.allowed_self_numbers, frozenset({"+15550000001"}))
+        self.assertEqual(decide(request).reason, "self_destination_not_allowlisted")
+
+    def test_invalid_request_counters_are_rejected(self):
+        with self.assertRaisesRegex(ValueError, "daily_count"):
+            CallRequest(mode="self_call", destination="+1", daily_count=-1)
+        with self.assertRaisesRegex(ValueError, "daily_limit"):
+            CallRequest(mode="self_call", destination="+1", daily_limit=-1)
+
+    def test_blank_destination_is_rejected(self):
+        with self.assertRaisesRegex(ValueError, "destination_required"):
+            CallRequest(mode="self_call", destination="   ")
+
     def test_daily_limit_is_hard(self):
         d = decide(CallRequest(
             mode="self_call",
