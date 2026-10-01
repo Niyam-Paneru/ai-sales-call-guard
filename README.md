@@ -35,4 +35,6 @@ This repository deliberately leaves out provider SDKs, phone credentials, contac
 
 The private system contains the larger operational context and provider-specific plumbing.
 
+Want the guardrails without the sales pitch? Read the [invariants](docs/invariants.md), [failure modes](docs/failure-modes.md), [design decisions](docs/decisions.md), and [provenance](PROVENANCE.md).
+
 > A dial tone is not a governance framework.
