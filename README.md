@@ -2,67 +2,35 @@
 
 **A robot with a dial tone should have more rules than a teenager with a borrowed car.**
 
-This repo is a sanitized public proof extracted from the guardrails built around DentSignal's outbound AI sales-call experiments. It does **not** place phone calls. It decides whether a call attempt is allowed to exist in the first place.
+This is the public policy slice from DentSignal's outbound AI-call experiments. It does **not** place calls. It decides whether a call attempt is even eligible to exist.
 
-## What it demonstrates
+## What the repo is actually about
 
-- default-deny call policy;
-- separate self-test and live-prospect gates;
-- AI disclosure requirement;
-- DNC suppression;
-- no-PHI boundary for sales calls;
-- allowlisted self-call destinations;
-- per-day limits;
-- explicit reasons for every denial.
+The interesting problem is not “how do I call a provider API?”
 
-## Workflow
+It is:
 
-```mermaid
-flowchart LR
-    A[Call request] --> B{PHI or DNC?}
-    B -- yes --> X[DENY]
-    B -- no --> C{Self test?}
-    C -- yes --> D{Allowlisted + enabled + under limit?}
-    D -- no --> X
-    D -- yes --> Y[ALLOW SELF TEST]
-    C -- no --> E{Live prospect gates all enabled?}
-    E -- no --> X
-    E -- yes --> F{AI disclosure + approved policy?}
-    F -- no --> X
-    F -- yes --> Z[ALLOW LIVE ATTEMPT]
-```
+- should this request be blocked before any provider sees it?
+- is this only a self-test, or a real external call?
+- is the destination suppressed?
+- did the request cross a privacy boundary?
+- are the right switches enabled?
+- is the required disclosure gate present?
+- has the daily limit already been reached?
 
-The important part is the number of ways the graph can end at **DENY**.
+The code is split into request models, universal hard gates, mode-specific gates, and the final policy dispatcher.
 
-## Run it
+## Repo map
 
-```bash
-python -m unittest discover -s tests
-```
+| Area | Responsibility |
+|---|---|
+| `models.py` | request + decision types |
+| `gates.py` | universal, self-test, and live-call checks |
+| `policy.py` | final default-deny routing |
+| `tests/` | hard-gate and mode-gate behavior |
 
-## Tiny example
+This repository deliberately leaves out provider SDKs, phone credentials, contact lists, and automated outreach.
 
-```python
-from sales_call_guard.policy import CallRequest, decide
+The private system contains the larger operational context and provider-specific plumbing.
 
-decision = decide(
-    CallRequest(
-        mode="self_call",
-        destination="+15550000001",
-        self_calls_enabled=True,
-        allowed_self_numbers={"+15550000001"},
-        daily_count=0,
-        daily_limit=1,
-    )
-)
-
-print(decision.allowed, decision.reason)
-```
-
-## Boundary
-
-This is policy code, not a telemarketing launcher. No provider credentials, real prospect data, patient data, dialing code, SMS sender, or automatic outreach is included.
-
-## Provenance
-
-Sanitized and rewritten from the safety gates used in the private DentSignal codebase. The private system contains provider-specific integrations and operational evidence that are intentionally not copied here.
+> A dial tone is not a governance framework.
