@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="300" viewBox="0 0 1200 300" role="img" aria-labelledby="t d">
+<title id="t">AI sales call guard workflow</title>
+<desc id="d">A call request passes universal blocks before separate self-test and external-call gates.</desc>
+<rect width="1200" height="300" fill="#0b1020"/>
+<text x="54" y="50" fill="#f8fafc" font-family="Arial,sans-serif" font-size="28" font-weight="700">Policy first. Provider later.</text>
+<g font-family="Arial,sans-serif">
+  <rect x="60" y="115" width="220" height="90" rx="18" fill="#111827" stroke="#60a5fa" stroke-width="3"/>
+  <text x="170" y="151" text-anchor="middle" fill="#dbeafe" font-size="20" font-weight="700">request</text>
+  <text x="170" y="179" text-anchor="middle" fill="#94a3b8" font-size="14">mode + destination</text>
+
+  <rect x="350" y="100" width="250" height="120" rx="18" fill="#111827" stroke="#fb7185" stroke-width="3"/>
+  <text x="475" y="138" text-anchor="middle" fill="#ffe4e6" font-size="20" font-weight="700">hard gates</text>
+  <text x="475" y="166" text-anchor="middle" fill="#94a3b8" font-size="14">privacy · suppression · limit</text>
+  <text x="475" y="194" text-anchor="middle" fill="#fb7185" font-size="13">blocked → stop</text>
+
+  <rect x="680" y="78" width="210" height="82" rx="18" fill="#111827" stroke="#22d3ee" stroke-width="3"/>
+  <text x="785" y="112" text-anchor="middle" fill="#cffafe" font-size="19" font-weight="700">self-test gate</text>
+  <text x="785" y="140" text-anchor="middle" fill="#94a3b8" font-size="13">explicitly enabled</text>
+
+  <rect x="680" y="178" width="210" height="82" rx="18" fill="#111827" stroke="#a78bfa" stroke-width="3"/>
+  <text x="785" y="212" text-anchor="middle" fill="#ede9fe" font-size="19" font-weight="700">external gate</text>
+  <text x="785" y="240" text-anchor="middle" fill="#94a3b8" font-size="13">all required checks</text>
+
+  <rect x="960" y="115" width="180" height="90" rx="18" fill="#111827" stroke="#4ade80" stroke-width="3"/>
+  <text x="1050" y="151" text-anchor="middle" fill="#dcfce7" font-size="20" font-weight="700">decision</text>
+  <text x="1050" y="179" text-anchor="middle" fill="#94a3b8" font-size="14">allow / deny + reason</text>
+</g>
+<g stroke="#475569" stroke-width="4" fill="none" stroke-linecap="round">
+  <path d="M280 160 H350"/>
+  <path d="M600 160 C630 160 645 119 680 119"/>
+  <path d="M600 160 C630 160 645 219 680 219"/>
+  <path d="M890 119 C930 119 930 160 960 160"/>
+  <path d="M890 219 C930 219 930 160 960 160"/>
+</g>
+<text x="1140" y="275" fill="#64748b" font-family="Arial,sans-serif" font-size="13" text-anchor="end">No accidental fallback lanes.</text>
+</svg>
