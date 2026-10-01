@@ -5,7 +5,9 @@ from sales_call_guard.policy import CallRequest, decide
 
 class SalesCallGuardTests(unittest.TestCase):
     def test_unknown_mode_denies(self):
-        self.assertFalse(decide(CallRequest(mode="mystery", destination="+1")).allowed)
+        d = decide(CallRequest(mode="mystery", destination="+1"))
+        self.assertFalse(d.allowed)
+        self.assertEqual(d.reason, "unknown_call_mode")
 
     def test_phi_denies_everything(self):
         d = decide(CallRequest(
@@ -46,6 +48,7 @@ class SalesCallGuardTests(unittest.TestCase):
             allowed_self_numbers={"+15550000001"},
         ))
         self.assertTrue(d.allowed)
+        self.assertEqual(d.reason, "self_call_allowed")
 
     def test_daily_limit_is_hard(self):
         d = decide(CallRequest(
@@ -67,6 +70,16 @@ class SalesCallGuardTests(unittest.TestCase):
             disclosure_enabled=True,
         ))
         self.assertEqual(d.reason, "global_sales_calls_disabled")
+
+    def test_live_call_requires_live_switch(self):
+        d = decide(CallRequest(
+            mode="live_prospect",
+            destination="+15550000003",
+            calls_enabled=True,
+            ai_cold_call_policy="approved",
+            disclosure_enabled=True,
+        ))
+        self.assertEqual(d.reason, "live_sales_calls_disabled")
 
     def test_live_call_requires_approved_policy(self):
         d = decide(CallRequest(
@@ -98,6 +111,7 @@ class SalesCallGuardTests(unittest.TestCase):
             disclosure_enabled=True,
         ))
         self.assertTrue(d.allowed)
+        self.assertEqual(d.reason, "live_call_policy_satisfied")
 
 
 if __name__ == "__main__":
