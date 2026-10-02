@@ -1,46 +1,46 @@
 # AI Sales Call Guard
 
-A small default-deny policy layer for deciding whether a **self-test call** or an **external prospect call** is eligible to proceed to transport.
+A default-deny **pre-transport policy layer** that decides whether a self-test call or an external prospect call is eligible to proceed.
 
-This repository **never places a call**. It contains no provider SDK, credentials, contact list, or dialing transport. Its job ends at an explicit `Decision(allowed, reason)`.
+This repository never places a call. It contains no provider SDK, credentials, contact list, or dialing transport; its job ends at `Decision(allowed, reason)`.
 
-![Call-mode governance flow](docs/workflow.svg)
+```mermaid
+flowchart TD
+    R["CallRequest"] --> H{"Universal hard gates clear?<br/>PHI · suppression · daily cap"}
+    H -- "no" --> HD["DENY<br/>hard-gate reason"]
+    H -- "yes" --> M{"request.mode"}
 
-## The problem this repo isolates
+    M -- "self_call" --> S{"Self calls enabled<br/>and destination allowlisted?"}
+    S -- "no" --> SD["DENY<br/>self-mode reason"]
+    S -- "yes" --> SA["ALLOW<br/>self_call_allowed"]
 
-Call systems often have more than one operating mode. Permission to call an allowlisted test number should not silently become permission to contact an external destination.
+    M -- "live_prospect" --> L{"Global + live enabled,<br/>policy approved, disclosure on?"}
+    L -- "no" --> LD["DENY<br/>live-mode reason"]
+    L -- "yes" --> LA["ALLOW<br/>live_call_policy_satisfied"]
 
-`decide()` therefore applies two levels of policy:
+    M -- "other" --> U["DENY<br/>unknown_call_mode"]
+```
 
-1. **Universal pre-transport blocks** run first for prohibited sensitive context, suppressed destinations, and the daily cap.
-2. **Mode-specific gates** then separate `self_call` from `live_prospect`.
-3. Any unknown mode is denied by default.
-
-The request object snapshots the self-call allowlist into a `frozenset`, so mutating a caller-owned set after construction cannot silently widen an already-created request.
-
-## Where this layer sits
-
-This module owns one narrow boundary so it does not pretend to be a general safety system.
-
-| Concern | Owned here? | Boundary |
-|---|---|---|
-| Generic tool/agent authorization | No | broader systems decide whether an agent may attempt a side effect at all |
-| **Call-mode eligibility before transport** | **Yes** | this repo separates self-test from external-prospect policy and returns a reasoned allow/deny decision |
-| Provider dialing / telephony | No | no SDK, credentials, number provisioning, or call creation exists here |
-| Realtime audio / latency safety | No | media capture, pipeline timing, and late-answer suppression belong after transport begins |
-
-That separation is the reason this repo exists independently: **the same system may permit a controlled self-call while still denying external prospect calls**.
+The order matters: mode-specific logic is unreachable until the universal gates pass. Unknown modes do not get improvisation privileges; they get `unknown_call_mode`.
 
 ## Decision paths
 
 | Path | Required state | Allow reason | Representative deny reasons |
 |---|---|---|---|
-| Universal gates | no PHI flag, not suppressed, below daily limit | continues to mode dispatch | `sales_call_contains_phi`, `destination_is_suppressed`, `daily_limit_reached` |
+| Universal gates | no PHI flag, destination not suppressed, below daily limit | continue to mode dispatch | `sales_call_contains_phi`, `destination_is_suppressed`, `daily_limit_reached` |
 | `self_call` | `self_calls_enabled` and destination in `allowed_self_numbers` | `self_call_allowed` | `self_calls_disabled`, `self_destination_not_allowlisted` |
-| `live_prospect` | `calls_enabled`, `live_calls_enabled`, policy input equals `approved`, and disclosure enabled | `live_call_policy_satisfied` | `global_sales_calls_disabled`, `live_sales_calls_disabled`, `ai_cold_call_policy_not_approved`, `ai_disclosure_missing` |
+| `live_prospect` | `calls_enabled`, `live_calls_enabled`, policy input equals `approved`, disclosure enabled | `live_call_policy_satisfied` | `global_sales_calls_disabled`, `live_sales_calls_disabled`, `ai_cold_call_policy_not_approved`, `ai_disclosure_missing` |
 | any other mode | none | — | `unknown_call_mode` |
 
-`ai_cold_call_policy="approved"` is an **application policy input**. It is not evidence of legal compliance or permission to call in any jurisdiction.
+`ai_cold_call_policy="approved"` is an **application policy input**. It is not evidence of legal compliance, consent, or permission to call in any jurisdiction.
+
+## Request integrity
+
+`CallRequest` rejects blank destinations and invalid counters. It also snapshots the caller-provided self-call allowlist into a `frozenset`, so mutating the original set later cannot widen an already-created request. Those invariants stay in prose and tests rather than turning the decision diagram into a wiring closet.
+
+## Boundary
+
+This module owns only call-mode eligibility **before transport**. Generic agent/tool authorization happens earlier; provider dialing and realtime media behavior happen later. None of those surrounding layers are implemented here.
 
 ## Read the implementation
 
@@ -49,15 +49,9 @@ That separation is the reason this repo exists independently: **the same system 
 - [`src/sales_call_guard/policy.py`](src/sales_call_guard/policy.py) — hard-gate-first dispatch and default deny.
 - [`tests/`](tests/) — behavior checks for hard gates, request integrity, both modes, and unknown-mode denial.
 
-## Verify
+Verification commands and what they prove: [`docs/verification.md`](docs/verification.md).
 
-```bash
-PYTHONPATH=src python -m unittest discover -s tests
-```
-
-The CircleCI configuration runs the same behavior tests plus source compilation and public-proof file checks. A CI configuration is not the same as a published passing status; inspect the current commit status when evaluating remote CI.
-
-## Boundary and provenance
+## What this gate does not decide
 
 This is a sanitized policy slice from guarded outbound-call experiments in private DentSignal work. Provider transport, credentials, real contact data, campaign data, and operational call flows are intentionally excluded.
 
