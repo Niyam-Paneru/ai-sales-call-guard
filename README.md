@@ -51,7 +51,7 @@ This module owns only call-mode eligibility **before transport**. Generic agent/
 
 Verification commands and what they prove: [`docs/verification.md`](docs/verification.md).
 
-## Limits and provenance
+## What this gate does not decide
 
 This is a sanitized policy slice from guarded outbound-call experiments in private DentSignal work. Provider transport, credentials, real contact data, campaign data, and operational call flows are intentionally excluded.
 
