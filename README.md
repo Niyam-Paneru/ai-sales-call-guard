@@ -2,26 +2,46 @@
 
 A default-deny **pre-transport policy layer** that decides whether a self-test call or an external prospect call is eligible to proceed.
 
-This repository never places a call. It contains no provider SDK, credentials, contact list, or dialing transport; its job ends at `Decision(allowed, reason)`.
+**Unknown call modes do not get improvisation privileges.**
+
+This public sample comes from guarded outbound-call experiments in my private DentSignal work. It exposes the policy decisions for review; I can build and adapt the surrounding calling workflows and provider integrations. The sample returns `Decision(allowed, reason)` and places no calls.
+
+## Hard gates: reject before mode dispatch
+
+PHI, destination suppression, and the daily limit are checked in that order. A refusal stops the request before any self-test or prospect-mode logic.
 
 ```mermaid
-flowchart TD
-    R["CallRequest"] --> H{"Universal hard gates clear?<br/>PHI · suppression · daily cap"}
-    H -- "no" --> HD["DENY<br/>hard-gate reason"]
-    H -- "yes" --> M{"request.mode"}
-
-    M -- "self_call" --> S{"Self calls enabled<br/>and destination allowlisted?"}
-    S -- "no" --> SD["DENY<br/>self-mode reason"]
-    S -- "yes" --> SA["ALLOW<br/>self_call_allowed"]
-
-    M -- "live_prospect" --> L{"Global + live enabled,<br/>policy approved, disclosure on?"}
-    L -- "no" --> LD["DENY<br/>live-mode reason"]
-    L -- "yes" --> LA["ALLOW<br/>live_call_policy_satisfied"]
-
-    M -- "other" --> U["DENY<br/>unknown_call_mode"]
+flowchart LR
+    R["<b>CallRequest</b>"] --> H{"Hard gates clear?"}
+    H -- No --> D["<b>Deny</b><br/>Hard-gate reason"]
+    H -- Yes --> M["<b>Dispatch mode</b>"]
+    classDef input fill:#e8e6df,stroke:#55534a,color:#20201d,stroke-width:2px;
+    classDef pass fill:#d2e5d8,stroke:#38734d,color:#183923,stroke-width:2px;
+    classDef stop fill:#f4dadd,stroke:#b14253,color:#611c29,stroke-width:2px;
+    class R,H,M input;
+    class D stop;
 ```
 
-The order matters: mode-specific logic is unreachable until the universal gates pass. Unknown modes do not get improvisation privileges; they get `unknown_call_mode`.
+## Modes: enablement is specific to the call path
+
+Self calls require their switch and an allowlisted destination. Prospect calls require the global switch, live switch, approved application-policy input, and disclosure. The table below gives the exact reasons; an unknown mode always denies.
+
+```mermaid
+flowchart LR
+    M{"Mode?"} -- self_call --> S{"Self gates clear?"}
+    S -- No --> SD["<b>Deny</b><br/>Self-mode reason"]
+    S -- Yes --> SA["<b>Allow</b><br/>self_call_allowed"]
+    M -- live_prospect --> L{"Live gates clear?"}
+    L -- No --> LD["<b>Deny</b><br/>Live-mode reason"]
+    L -- Yes --> LA["<b>Allow</b><br/>live_call_policy_satisfied"]
+    M -- Other --> U["<b>Deny</b><br/>unknown_call_mode"]
+    classDef input fill:#e8e6df,stroke:#55534a,color:#20201d,stroke-width:2px;
+    classDef pass fill:#d2e5d8,stroke:#38734d,color:#183923,stroke-width:2px;
+    classDef stop fill:#f4dadd,stroke:#b14253,color:#611c29,stroke-width:2px;
+    class M,S,L input;
+    class SA,LA pass;
+    class SD,LD,U stop;
+```
 
 ## Decision paths
 
