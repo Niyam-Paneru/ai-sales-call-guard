@@ -15,5 +15,8 @@ The external path is otherwise enabled but disclosure is not. Response: deny.
 ## Daily cap is reached
 The request is valid but the configured limit is exhausted. Response: deny.
 
+## Non-integral quota values bypass daily limits
+NaN compares neither below zero nor at or above the configured limit, so the former non-negative check could accept it and let a request past the daily cap. Response: require non-negative integer counters and reject booleans, floats, strings, and missing values before dispatch.
+
 ## Unknown mode
 A typo or new mode bypasses reviewed logic. Response: default deny.
