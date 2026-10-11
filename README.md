@@ -74,7 +74,7 @@ flowchart TB
 
 ## Request integrity
 
-`CallRequest` rejects blank destinations and invalid counters. It also snapshots the caller-provided self-call allowlist into a `frozenset`, so mutating the original set later cannot widen an already-created request. Those invariants stay in prose and tests rather than turning the decision diagram into a wiring closet.
+`CallRequest` rejects blank destinations and requires non-negative integer daily count/limit values (excluding booleans, NaN, and infinity), before any call decision. It also snapshots the caller-provided self-call allowlist into a `frozenset`, so mutating the original set later cannot widen an already-created request. Those invariants stay in prose and tests rather than turning the decision diagram into a wiring closet.
 
 ## Boundary
 
