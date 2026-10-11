@@ -22,10 +22,11 @@ class CallRequest:
     def __post_init__(self) -> None:
         if not self.destination.strip():
             raise ValueError("destination_required")
-        if self.daily_count < 0:
-            raise ValueError("daily_count_must_be_non_negative")
-        if self.daily_limit < 0:
-            raise ValueError("daily_limit_must_be_non_negative")
+        # NaN compares neither below zero nor above a quota: reject non-integers.
+        if type(self.daily_count) is not int or self.daily_count < 0:
+            raise ValueError("daily_count_must_be_non_negative_integer")
+        if type(self.daily_limit) is not int or self.daily_limit < 0:
+            raise ValueError("daily_limit_must_be_non_negative_integer")
 
         # A frozen dataclass is only meaningfully immutable if nested inputs are
         # snapshotted too. Do not retain a caller-owned mutable set.
