@@ -20,58 +20,7 @@ The supplied self-call list is copied into an immutable set. Changing the caller
 
 This is the sort of feature nobody notices when it works, which is probably what you want from a call-safety gate.
 
-## The call never reaches transport unless both gates agree
-
-The universal checks get first refusal, regardless of mode.
-
-```mermaid
----
-config:
-  flowchart:
-    curve: linear
-    nodeSpacing: 28
-    rankSpacing: 42
----
-flowchart LR
-    accTitle: Hard gates: reject before mode dispatch
-    accDescr: Decision flow for hard gates: reject before mode dispatch.
-    R["CallRequest"] --> H{"Hard gates clear?"}
-    H -- No --> D["Deny<br/>Hard-gate reason"]
-    H -- Yes --> M["Dispatch mode"]
-    classDef input stroke-width:1.5px;
-    classDef pass stroke-width:2.5px;
-    classDef stop stroke-width:2px,stroke-dasharray:5 3;
-    class R,H,M input;
-    class D stop;
-```
-
-Passing those checks only gets the request as far as its mode-specific policy.
-
-```mermaid
----
-config:
-  flowchart:
-    curve: linear
-    nodeSpacing: 28
-    rankSpacing: 42
----
-flowchart TB
-    accTitle: Modes: enablement is specific to the call path
-    accDescr: Decision flow for modes: enablement is specific to the call path.
-    M{"Mode?"} -- self_call --> S{"Self gates clear?"}
-    S -- No --> SD["Deny<br/>Self-mode reason"]
-    S -- Yes --> SA["Allow<br/>self_call_allowed"]
-    M -- live_prospect --> L{"Live gates clear?"}
-    L -- No --> LD["Deny<br/>Live-mode reason"]
-    L -- Yes --> LA["Allow<br/>live_call_policy_satisfied"]
-    M -- Other --> U["Deny<br/>unknown_call_mode"]
-    classDef input stroke-width:1.5px;
-    classDef pass stroke-width:2.5px;
-    classDef stop stroke-width:2px,stroke-dasharray:5 3;
-    class M,S,L input;
-    class SA,LA pass;
-    class SD,LD,U stop;
-```
+The universal checks run **before** mode-specific checks. Neither a self-test setting nor an external-call approval can bypass a suppression or daily cap.
 
 Look at [models](src/sales_call_guard/models.py), [hard and mode gates](src/sales_call_guard/gates.py), [dispatch](src/sales_call_guard/policy.py), and [tests](tests/). The [verification page](docs/verification.md) lists the exact refusal cases.
 
