@@ -1,10 +1,17 @@
 # AI Sales Call Guard
 
-A default-deny **pre-transport policy layer** that decides whether a self-test call or an external prospect call is eligible to proceed.
+Before an automated caller places a call, somebody has to check whether that **mode** is allowed. This Python policy core checks suppression, sensitive-data flags, call caps, self-test allowlists, and prospect-call requirements before a dialer gets involved.
 
-**Unknown call modes do not get improvisation privileges.**
+Unknown and disabled modes are denied. The code returns a decision, not a ringing telephone — fortunately for everyone involved.
 
-This public sample comes from guarded outbound-call experiments in my private DentSignal work. It exposes the policy decisions for review; I can build and adapt the surrounding calling workflows and provider integrations. The sample returns `Decision(allowed, reason)` and places no calls.
+**Try it / check the behavior:**
+
+```powershell
+$env:PYTHONPATH = "src"
+python -m unittest discover -s tests
+```
+
+Pre-transport software gate only; not a calling product, consent determination, or legal-compliance certification. [Verification](docs/verification.md).
 
 ## Hard gates: reject before mode dispatch
 
