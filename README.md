@@ -2,7 +2,7 @@
 
 The most important feature of an automated caller might be its ability to **not call**.
 
-This Python module sits *before* call transport. Give it a CallRequest and it returns a decision and reason. It cannot place a phone call. That's a feature, not an embarrassing omission.
+This Python module sits *before* call transport. Give it a `CallRequest` and it returns a decision and reason. It cannot place a phone call. That's a feature, not an embarrassing omission.
 
 ## Who gets past the off switch?
 
@@ -16,7 +16,7 @@ Every request is checked first for sensitive-data flags, suppressed destinations
 
 The self-call allowlist is copied into an immutable set. Editing the original list afterwards doesn't turn an unauthorized number into “oh, that one was always there.”
 
-Approval is not a backstage pass around suppression or daily limits. And a third-party application setting named “approved” is **not legal consent or compliance certification** — naming a Boolean doesn't make a regulator appear.
+Approval cannot bypass suppression or daily limits. An application setting named `approved` is **not legal consent or compliance certification**.
 
 Follow [models](src/sales_call_guard/models.py), [hard/mode gates](src/sales_call_guard/gates.py), [dispatch](src/sales_call_guard/policy.py), [tests](tests/), and the [rejection cases](docs/verification.md).
 
@@ -24,4 +24,4 @@ Follow [models](src/sales_call_guard/models.py), [hard/mode gates](src/sales_cal
 
 There is no telephony provider, number list, contact database, campaign workflow, or outbound calling. The module supplies a decision contract; any real application must implement additional policy, consent, and transport checks.
 
-A good off switch should be deeply boring. Nobody should have to write an incident report titled “the chatbot was feeling persuasive.” [Security](SECURITY.md) · [provenance](PROVENANCE.md).
+The safety goal is simple: no call should start when the policy says stop. [Security](SECURITY.md) · [provenance](PROVENANCE.md).
