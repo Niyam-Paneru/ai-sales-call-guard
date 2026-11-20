@@ -2,9 +2,7 @@
 
 This is a sales-call project whose proudest feature is **not calling people**.
 
-Not terribly exciting for the robot's sales targets. Excellent for anyone who put a number on the suppression list.
-
-The Python module sits *before* the dialer. Give it a `CallRequest`, and it returns a decision and reason. It doesn't make calls. It decides whether a caller should even be allowed to try.
+There's a dialer elsewhere. This Python module stays in front of it like a very strict receptionist: it checks the requested mode, destination, limits and policy, then returns a decision and reason. It doesn't get a commission for letting extra calls through.
 
 ## The robot's very short guest list
 
