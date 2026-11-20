@@ -1,10 +1,10 @@
 # AI Sales Call Guard
 
-The most important feature of an automated caller might be its ability to **not call**.
+I built a module for AI sales calls that **can't make a sales call**. That sounds like an unfinished product until you consider how useful an off switch is.
 
-This Python module sits *before* call transport. Give it a `CallRequest` and it returns a decision and reason. It cannot place a phone call. That's a feature, not an embarrassing omission.
+This Python code sits *before* the dialer. Give it a `CallRequest` and it returns a decision and a reason. If the policy says no, the phone never needs to ring.
 
-## Who gets past the off switch?
+## Before the dialer gets any ideas
 
 Every request is checked first for sensitive-data flags, suppressed destinations, and the daily cap. **Any failure stops the request**, regardless of mode.
 
@@ -24,4 +24,4 @@ Follow [models](src/sales_call_guard/models.py), [hard/mode gates](src/sales_cal
 
 There is no telephony provider, number list, contact database, campaign workflow, or outbound calling. The module supplies a decision contract; any real application must implement additional policy, consent, and transport checks.
 
-The safety goal is simple: no call should start when the policy says stop. [Security](SECURITY.md) · [provenance](PROVENANCE.md).
+The whole point is that a sales bot doesn't get to talk its way around the off switch. [Security](SECURITY.md) · [provenance](PROVENANCE.md).
